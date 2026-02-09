@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>The Knight’s Quest</title>
+
+<style>
+  body {
+    margin: 0;
+    font-family: 'Georgia', serif;
+    background: radial-gradient(circle, #2b2b2b, #0f0f0f);
+    color: #f5f0e6;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  .screen {
+    display: none;
+    text-align: center;
+    max-width: 600px;
+    padding: 40px;
+    background: rgba(0,0,0,0.6);
+    border-radius: 20px;
+    box-shadow: 0 0 40px rgba(255,215,150,0.2);
+  }
+
+  .screen.active {
+    display: block;
+  }
+
+  h1 {
+    font-size: 2.2rem;
+    margin-bottom: 20px;
+  }
+
+  p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+  }
+
+  button {
+    margin-top: 30px;
+    padding: 12px 28px;
+    font-size: 1.1rem;
+    border-radius: 30px;
+    border: none;
+    cursor: pointer;
+  }
+
+  .primary {
+    background: #caa24d;
+    color: #2b1d00;
+  }
+
+  .choice {
+    margin: 10px;
+  }
+
+  #no {
+    position: absolute;
+    background: #777;
+    color: white;
+  }
+</style>
+</head>
+
+<body>
+
+<!-- INTRO -->
+<div class="screen active" id="intro">
+  <h1>🛡️ The Quest of the Steadfast Knight</h1>
+  <p>
+    In every age, a knight is called not to battle…<br>
+    but to choose what he will protect.
+  </p>
+  <button class="primary" onclick="next('level1')">TAKE UP THE SWORD</button>
+</div>
+
+<!-- LEVEL 1 -->
+<div class="screen" id="level1">
+  <h1>The Fellowship</h1>
+  <p>
+    No knight walks far alone.<br>
+    What made this fellowship strong?
+  </p>
+  <button class="choice" onclick="fail()">Strength</button>
+  <button class="choice" onclick="fail()">Luck</button>
+  <button class="choice primary" onclick="next('level2')">
+    Choosing each other
+  </button>
+</div>
+
+<!-- LEVEL 2 -->
+<div class="screen" id="level2">
+  <h1>The Long March</h1>
+  <p id="marchText">
+    The road grew long. Turning back was easier.
+  </p>
+  <button class="primary" onclick="march()">KEEP GOING</button>
+</div>
+
+<!-- LEVEL 3 -->
+<div class="screen" id="level3">
+  <h1>The Final Trial</h1>
+  <p>
+    What does the knight choose?
+  </p>
+  <button class="choice" onclick="fail()">Glory</button>
+  <button class="choice" onclick="fail()">Gold</button>
+  <button class="choice primary" onclick="next('treasure')">
+    Love
+  </button>
+</div>
+
+<!-- TREASURE -->
+<div class="screen" id="treasure">
+  <h1>💎 The Greatest Treasure</h1>
+  <p>
+    The greatest treasure was never gold.<br>
+    It was chosen.
+  </p>
+  <h2>Will you be my Valentine?</h2>
+  <button class="primary" onclick="yes()">YES</button>
+  <button id="no">NO</button>
+</div>
+
+<script>
+  let marchCount = 0;
+  const marchLines = [
+    "Still here.",
+    "Didn’t leave.",
+    "Chose you again.",
+    "Again.",
+    "Again."
+  ];
+
+  function next(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+  }
+
+  function fail() {
+    alert("The knight knows this is not the true path.");
+  }
+
+  function march() {
+    if (marchCount < marchLines.length) {
+      document.getElementById("marchText").innerText = marchLines[marchCount];
+      marchCount++;
+    } else {
+      next('level3');
+    }
+  }
+
+  const noBtn = document.getElementById("no");
+  noBtn.style.left = "55%";
+  noBtn.style.top = "70%";
+
+  document.addEventListener("mousemove", e => {
+    if (!document.getElementById("treasure").classList.contains("active")) return;
+    const rect = noBtn.getBoundingClientRect();
+    const dx = e.clientX - (rect.left + rect.width / 2);
+    const dy = e.clientY - (rect.top + rect.height / 2);
+    if (Math.sqrt(dx*dx + dy*dy) < 120) {
+      noBtn.style.left = Math.random() * (window.innerWidth - 100) + "px";
+      noBtn.style.top = Math.random() * (window.innerHeight - 50) + "px";
+    }
+  });
+
+  function yes() {
+    document.body.innerHTML = `
+      <div style="text-align:center;padding:60px;">
+        <h1>🛡️ The knight has chosen wisely.</h1>
+        <p>Quest complete. Return home.</p>
+      </div>
+    `;
+  }
+</script>
+
+</body>
+</html>
